@@ -19,6 +19,8 @@ configs:
     file: ./prometheus/rules/swarm_node.rules
   task_rules:
     file: ./prometheus/rules/swarm_task.rules
+  prom_conf:
+    file: ./prometheus/conf/prometheus.yml
 
 services:
   dockerd-exporter:
@@ -140,7 +142,7 @@ services:
           memory: 64M
 
   prometheus:
-    image: stefanprodan/swarmprom-prometheus
+    image: prom/prometheus:v1.8.2
     networks:
       - net
     command:
@@ -158,6 +160,8 @@ services:
         target: /etc/prometheus/swarm_node.rules
       - source: task_rules
         target: /etc/prometheus/swarm_task.rules
+      - source: prom_conf
+        target: /etc/prometheus/prometheus.yml
     deploy:
       mode: replicated
       replicas: 1
